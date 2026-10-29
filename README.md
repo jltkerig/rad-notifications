@@ -185,3 +185,7 @@ adapters/claude-code.ps1
 sounds/                 done.wav, attention.wav, error.wav, info.wav
 tests/
 ```
+
+## License
+
+MIT. See LICENSE.
