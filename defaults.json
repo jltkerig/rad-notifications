@@ -1,0 +1,102 @@
+{
+  "theme": "dark",
+  "popup": {
+    "position": "bottom-right",
+    "margin": 16,
+    "width": 380,
+    "maxHeight": 150,
+    "stackGap": 10,
+    "maxStack": 4,
+    "cornerRadius": 10,
+    "opacity": 0.97,
+    "fontFamily": "Segoe UI",
+    "titleSize": 15,
+    "messageSize": 13,
+    "noteSize": 11,
+    "stripeWidth": 6,
+    "borderWidth": 1,
+    "shadow": true,
+    "showProgress": true,
+    "closeButton": true,
+    "animation": true,
+    "pauseOnHover": true,
+    "clickAction": "focus",
+    "focusProcesses": ["Code", "Code - Insiders", "Cursor", "Windsurf", "WindowsTerminal"]
+  },
+  "themes": {
+    "dark": {
+      "background": "#1F2430", "text": "#F5F7FA", "muted": "#9AA4B2", "accent": "#4F8CFF", "progress": "#4F8CFF", "border": "#2D3442"
+    },
+    "light": {
+      "background": "#FFFFFF", "text": "#1B1F27", "muted": "#5F6B7A", "accent": "#2563EB", "progress": "#2563EB", "border": "#D5DAE1"
+    },
+    "midnight": {
+      "background": "#0B1020", "text": "#E8EBFF", "muted": "#8A91C7", "accent": "#8B5CF6", "progress": "#8B5CF6", "border": "#1C2444"
+    },
+    "forest": {
+      "background": "#10201A", "text": "#E6F5EC", "muted": "#8FB5A0", "accent": "#34D399", "progress": "#34D399", "border": "#1D3A2E"
+    },
+    "sunset": {
+      "background": "#2A1B1B", "text": "#FFF1E6", "muted": "#C9A38C", "accent": "#FB923C", "progress": "#FB923C", "border": "#4A2E2E"
+    },
+    "high-contrast": {
+      "background": "#000000", "text": "#FFFFFF", "muted": "#E0E0E0", "accent": "#FFD400", "progress": "#FFD400", "border": "#FFFFFF"
+    }
+  },
+  "events": {
+    "done": {
+      "enabled": true,
+      "title": "{workspace}: Finished",
+      "message": "{message}",
+      "note": "{task}",
+      "sound": "done",
+      "volume": 1.0,
+      "duration": 8,
+      "colors": { "accent": "#22C55E", "progress": "#22C55E" }
+    },
+    "attention": {
+      "enabled": true,
+      "title": "{workspace}: Needs you",
+      "message": "{message}",
+      "note": "{task}",
+      "sound": "attention",
+      "volume": 1.0,
+      "duration": 0,
+      "colors": { "accent": "#F59E0B", "progress": "#F59E0B" }
+    },
+    "error": {
+      "enabled": true,
+      "title": "{workspace}: Error",
+      "message": "{message}",
+      "note": "{task}",
+      "sound": "error",
+      "volume": 1.0,
+      "duration": 15,
+      "colors": { "accent": "#EF4444", "progress": "#EF4444" }
+    },
+    "info": {
+      "enabled": true,
+      "title": "{workspace}",
+      "message": "{message}",
+      "note": "",
+      "sound": "info",
+      "volume": 0.8,
+      "duration": 6
+    }
+  },
+  "claudeCode": {
+    "workspacesFolder": "",
+    "finishOnlyAfterKeyword": "",
+    "stopMessage": "Claude finished",
+    "taskMaxLength": 110,
+    "hooks": {
+      "Stop": "done",
+      "Notification": "attention"
+    },
+    "notificationTypes": {
+      "permission_prompt": "attention",
+      "elicitation_dialog": "attention",
+      "idle_prompt": "info"
+    }
+  }
+}
