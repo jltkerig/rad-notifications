@@ -134,6 +134,7 @@ Under `claudeCode`:
 | Key | Meaning |
 |---|---|
 | `workspacesFolder` | A folder of VS Code `.code-workspace` files. The popup then shows the name of the workspace that holds the session's folder, instead of the folder name. Leave empty to use the folder name. |
+| `useWorkspaceColor` | `true` colors the stripe and countdown bar with the workspace's `peacock.color` (needs `workspacesFolder`), for every event. `false`, or a workspace without that setting, uses the event colors. |
 | `finishOnlyAfterKeyword` | Empty shows a popup after every turn. Set to `"update"` to show the finish popup only after a prompt that starts with that word, so small questions stay quiet. |
 | `stopMessage` | The text for the finish popup. |
 | `taskMaxLength` | How much of your prompt `{task}` keeps. |

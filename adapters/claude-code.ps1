@@ -21,19 +21,25 @@ function Get-SessionFile([string]$Kind, $Hook) {
 }
 
 # The VS Code workspace (a .code-workspace file in settings "claudeCode.workspacesFolder") whose folder holds the
-# session's folder, most specific first. The files allow comments and trailing commas, so folder paths are read with a pattern.
-function Get-WorkspaceName([string]$WorkspacesFolder, [string]$Cwd) {
-    if (-not $WorkspacesFolder -or -not $Cwd -or -not (Test-Path -LiteralPath $WorkspacesFolder)) { return '' }
+# session's folder, most specific first. The files allow comments and trailing commas, so values are read with a pattern.
+# Returns the workspace name and its Peacock color ("peacock.color"), both empty when nothing matches.
+function Get-Workspace([string]$WorkspacesFolder, [string]$Cwd) {
+    $found = @{ name = ''; color = '' }
+    if (-not $WorkspacesFolder -or -not $Cwd -or -not (Test-Path -LiteralPath $WorkspacesFolder)) { return $found }
     $here = [IO.Path]::GetFullPath($Cwd).TrimEnd('\')
-    $best = ''; $bestLength = -1
+    $bestLength = -1
     foreach ($file in Get-ChildItem -LiteralPath $WorkspacesFolder -Filter *.code-workspace -ErrorAction SilentlyContinue) {
-        foreach ($match in [regex]::Matches([IO.File]::ReadAllText($file.FullName), '"path"\s*:\s*"([^"]+)"')) {
+        $text = [IO.File]::ReadAllText($file.FullName)
+        foreach ($match in [regex]::Matches($text, '"path"\s*:\s*"([^"]+)"')) {
             try { $folder = [IO.Path]::GetFullPath((Join-Path $WorkspacesFolder ($match.Groups[1].Value -replace '\\\\', '\'))).TrimEnd('\') } catch { continue }
             $inside = ($here -ieq $folder) -or $here.StartsWith($folder + '\', [StringComparison]::OrdinalIgnoreCase)
-            if ($inside -and $folder.Length -gt $bestLength) { $best = $file.BaseName; $bestLength = $folder.Length }
+            if (-not $inside -or $folder.Length -le $bestLength) { continue }
+            $color = [regex]::Match($text, '"peacock\.color"\s*:\s*"(#[0-9A-Fa-f]{6})"')
+            $found = @{ name = $file.BaseName; color = $(if ($color.Success) { $color.Groups[1].Value } else { '' }) }
+            $bestLength = $folder.Length
         }
     }
-    return $best
+    return $found
 }
 
 function Save-Prompt($Hook, $Settings) {
@@ -68,12 +74,14 @@ function New-HookRequest($Hook, $Settings, [string]$EventName) {
     $taskFile = Get-SessionFile 'task' $Hook
     $task = if (Test-Path -LiteralPath $taskFile) { [IO.File]::ReadAllText($taskFile, [Text.Encoding]::UTF8) } else { '' }
     $folder = if ($Hook.cwd) { Split-Path -Leaf ([string]$Hook.cwd) } else { '' }
-    $workspace = Get-WorkspaceName ([string]$Settings.claudeCode.workspacesFolder) ([string]$Hook.cwd)
-    return @{
+    $workspace = Get-Workspace ([string]$Settings.claudeCode.workspacesFolder) ([string]$Hook.cwd)
+    $request = @{
         event = $EventName
-        vars = @{ message = $message; task = $task; folder = $folder; workspace = $(if ($workspace) { $workspace } else { $folder })
+        vars = @{ message = $message; task = $task; folder = $folder; workspace = $(if ($workspace.name) { $workspace.name } else { $folder })
                   hook = [string]$Hook.hook_event_name; type = [string]$Hook.notification_type }
     }
+    if ($Settings.claudeCode.useWorkspaceColor -and $workspace.color) { $request.colors = @{ accent = $workspace.color; progress = $workspace.color } }
+    return $request
 }
 
 try {

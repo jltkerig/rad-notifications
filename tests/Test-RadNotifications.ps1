@@ -100,7 +100,7 @@ try {
     # ---- Claude Code adapter ----
     $workspaces = Join-Path $temp 'workspaces'
     New-Item -ItemType Directory -Force -Path $workspaces, (Join-Path $temp 'projects\app\sub'), (Join-Path $temp 'projects\other') | Out-Null
-    Set-Content -LiteralPath (Join-Path $workspaces 'my-app.code-workspace') -Value "{`n  // comment`n  `"folders`": [ { `"path`": `"../projects/app`", }, ],`n}"
+    Set-Content -LiteralPath (Join-Path $workspaces 'my-app.code-workspace') -Value "{`n  // comment`n  `"folders`": [ { `"path`": `"../projects/app`", }, ],`n  `"settings`": { `"peacock.color`": `"#12AB34`", },`n}"
     $workspacesJson = $workspaces.Replace('\', '\\')
     Set-Content -LiteralPath (Join-Path $temp 'claude.json') -Value "{ `"claudeCode`": { `"workspacesFolder`": `"$workspacesJson`", `"finishOnlyAfterKeyword`": `"update`" } }"
     $env:RAD_NOTIFY_SETTINGS = Join-Path $temp 'claude.json'
@@ -117,10 +117,13 @@ try {
     Assert-Equal $shown.event 'attention' 'permission prompt is an attention popup'
     Assert-Equal $shown.title 'my-app: Needs you' 'workspace name from the .code-workspace file'
     Assert-Equal $shown.message 'Claude needs your permission to use Bash' 'hook message shown'
+    Assert-Equal $shown.colors.accent '#12AB34' 'stripe uses the workspace peacock color'
+    Assert-Equal $shown.colors.progress '#12AB34' 'progress bar uses the workspace peacock color'
 
     $shown = Invoke-Adapter @{ hook_event_name = 'Notification'; session_id = $session; cwd = (Join-Path $temp 'projects\other'); message = 'Waiting'; notification_type = 'idle_prompt' }
     Assert-Equal $shown.event 'info' 'idle prompt is info'
     Assert-Equal $shown.title 'other' 'no workspace matches, so the folder name'
+    Assert-Equal $shown.colors.accent '#4F8CFF' 'no workspace matches, so the theme color'
 
     $shown = Invoke-Adapter @{ hook_event_name = 'Stop'; session_id = $session; cwd = $cwd }
     Assert-Equal $shown $null 'finish popup skipped when the turn did not start with the keyword'

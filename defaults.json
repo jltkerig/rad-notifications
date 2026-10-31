@@ -86,6 +86,7 @@
   },
   "claudeCode": {
     "workspacesFolder": "",
+    "useWorkspaceColor": true,
     "finishOnlyAfterKeyword": "",
     "stopMessage": "Claude finished",
     "taskMaxLength": 110,
