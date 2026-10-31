@@ -61,7 +61,7 @@
       "note": "{task}",
       "sound": "attention",
       "volume": 1.0,
-      "duration": 0,
+      "duration": 60,
       "colors": { "accent": "#F59E0B", "progress": "#F59E0B" }
     },
     "error": {

@@ -35,7 +35,7 @@ With Claude Code, there is nothing to do. The hooks show a popup when:
 
 | Claude Code event | Popup |
 |---|---|
-| Permission request or question (Notification) | `attention`, stays until you click it |
+| Permission request or question (Notification) | `attention`, 60 seconds |
 | A turn finishes (Stop) | `done`, 8 seconds |
 | Idle reminder | `info` |
 
